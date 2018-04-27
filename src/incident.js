@@ -19,5 +19,24 @@ export default class SanFranciscoDemoIncident extends IncidentNormalizer {
     super(payload, { timeZone, projection, fdId, firecaresId, name, state, shiftConfig });
   }
 
-  //normalize
+  normalizeAddress() {
+    const payload = this.payload[0];
+
+    const address = {
+      address_id: '',
+      address_line1: payload.address,
+      city: payload.city,
+      postal_code: payload.zipcode_of_incident,
+      response_zone: payload.box,
+      state: 'CA',
+      longitude: parseFloat(payload.location.coordinates[0]),
+      latitude: parseFloat(payload.location.coordinates[1]),
+      battalion: payload.battalion,
+      first_due: payload.station_area
+    };
+
+    address.geohash = IncidentNormalizer.latLongToGeohash(address.longitude, address.latitude);
+
+    return address;
+  }
 }

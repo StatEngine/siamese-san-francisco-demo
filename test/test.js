@@ -88,7 +88,7 @@ describe('San Francisco Normalizer', () => {
       });
     });
 
-    describe.skip('correctly parses the address', () => {
+    describe('correctly parses the address', () => {
       let address;
 
       before(() => {
@@ -96,43 +96,43 @@ describe('San Francisco Normalizer', () => {
       });
 
       it('correctly parses the house number', () => {
-        expect(address.number).to.equal('1941');
+        expect(address.number).to.be.undefined;
       });
 
       it('correctly parses the house number', () => {
-        expect(address.building_number).to.equal('6M1');
+        expect(address.building_number).to.be.undefined;
       });
 
       it('correctly parses the address line', () => {
-        expect(address.address_line1).to.equal('1941 N CAMINO PIO DECIMO');
+        expect(address.address_line1).to.equal('500 Block of WALLER ST');
       });
 
       it('correctly parses the city', () => {
-        expect(address.city).to.equal('sfON');
+        expect(address.city).to.equal('San Francisco');
       });
 
       it('correctly parses the first cross street', () => {
-        expect(address.cross_street1).to.equal('E WAVERLY ST');
+        expect(address.cross_street1).to.be.undefined;
       });
 
       it('correctly parses the second cross street', () => {
-        expect(address.cross_street2).to.equal('E WAVERLY ST');
+        expect(address.cross_street2).to.be.undefined;
       });
 
       it('correctly parses the first due', () => {
-        expect(address.first_due).to.be.undefined;
+        expect(address.first_due).to.be.equal('06');
       });
 
       it('correctly parses the street name', () => {
-        expect(address.name).to.equal('CAMINO PIO DECIMO');
+        expect(address.name).to.be.undefined;
       });
 
       it('correctly parses the postal code', () => {
-        expect(address.postal_code).to.equal('85715');
+        expect(address.postal_code).to.equal('94117');
       });
 
       it('correctly parses the prefix direction', () => {
-        expect(address.prefix_direction).to.equal('N');
+        expect(address.prefix_direction).to.be.undefined;
       });
 
       it('correctly parses the suffix direction', () => {
@@ -140,11 +140,11 @@ describe('San Francisco Normalizer', () => {
       });
 
       it('correctly parses the response zone', () => {
-        expect(address.response_zone).to.equal('1016001');
+        expect(address.response_zone).to.equal('3635');
       });
 
       it('correctly parses the state', () => {
-        expect(address.state).to.equal('AZ');
+        expect(address.state).to.equal('CA');
       });
 
       it('correctly parses the street type', () => {
@@ -152,15 +152,15 @@ describe('San Francisco Normalizer', () => {
       });
 
       it('correctly parses the latitude', () => {
-        expect(address.latitude).to.equal(32.2463172992);
+        expect(address.latitude).to.equal(37.770966902634);
       });
 
       it('correctly parses the longitude', () => {
-        expect(address.longitude).to.equal(-110.8306131845);
+        expect(address.longitude).to.equal(-122.432321754736);
       });
 
       it('correctly parses the geohash', () => {
-        expect(address.geohash).to.equal('9t9pmyr87t1p');
+        expect(address.geohash).to.equal('9q8yvgzxb4s1');
       });
 
       it('correctly parses the common place name', () => {
@@ -169,11 +169,11 @@ describe('San Francisco Normalizer', () => {
       });
 
       it('correctly parses the battalion', () => {
-        expect(address.battalion).to.equal('16');
+        expect(address.battalion).to.equal('B05');
       });
 
       it('correctly parses the elevation', () => {
-        expect(address.elevation).to.equal(0);
+        expect(address.elevation).to.be.undefined;
       });
     });
 
