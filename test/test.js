@@ -193,7 +193,6 @@ describe('San Francisco Normalizer', () => {
       });
 
       it('correctly parses the event open time', () => {
-        //2017-06-23T20:33:40.000
         expect(description.event_opened).to.equal('2017-06-23T20:33:40-07:00');
       });
 
@@ -219,6 +218,10 @@ describe('San Francisco Normalizer', () => {
 
       it('correctly parses the event subtype', () => {
         expect(description.subtype).to.equal('Alarm');
+      });
+
+      it('correctly parses the event category', () => {
+        expect(description.category).to.equal('FIRE');
       });
 
       it('correctly parses the first unit dispatch time', () => {

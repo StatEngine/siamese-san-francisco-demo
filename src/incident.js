@@ -47,6 +47,18 @@ export default class SanFranciscoDemoIncident extends IncidentNormalizer {
     return address;
   }
 
+  normalizeCategory(incidentType) {
+    const emsIncidents = ['Medical Incident'];
+    const otherIncidents = ['Other', 'Citizen Assist / Service Call'];
+
+    if (emsIncidents.includes(incidentType)) {
+      return 'EMS';
+    } else if (otherIncidents.includes(incidentType)) {
+      return 'OTHER';
+    }
+    return 'FIRE';
+  }
+
   normalizeDescription() {
     const ts = (t) => {
       if (_.isEmpty(t)) { return null; }
@@ -78,6 +90,7 @@ export default class SanFranciscoDemoIncident extends IncidentNormalizer {
       first_unit_enroute: minTimes('response_dttm'),
       first_unit_arrived: minTimes('on_scene_dttm'),
       psap_answer_time: ts(payload.received_dttm),
+      category: this.normalizeCategory(payload.call_type),
       hour_of_day: eventOpened.hours(),
       day_of_week: eventOpened.format('dddd'),
       shift: this.calculateShift(eventOpened.format()),
