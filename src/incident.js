@@ -1,6 +1,7 @@
 import 'babel-polyfill';
 import IncidentNormalizer from '@statengine/siamese';
 import _ from 'lodash';
+import moment from 'moment-timezone';
 
 export default class SanFranciscoDemoIncident extends IncidentNormalizer {
   // eslint-disable-next-line no-unused-vars
@@ -18,6 +19,10 @@ export default class SanFranciscoDemoIncident extends IncidentNormalizer {
     },
   } = {}) {
     super(payload, { timeZone, projection, fdId, firecaresId, name, state, shiftConfig });
+  }
+
+  parseDate(incomingDate) {
+    return moment.tz(incomingDate, this.timeZone);
   }
 
   normalizeAddress() {
@@ -60,22 +65,28 @@ export default class SanFranciscoDemoIncident extends IncidentNormalizer {
     //   firstUnitEnroute = minUnitEnroute ? minUnitEnroute.UnitEnrouteDateTime : undefined;
     // }
 
-    // const uniqUnits = _.uniq(
-    //   _.map(this.payload.Unit, u => u.UnitID));
+     const uniqUnits = _.uniq(
+       _.map(this.payload, u => u.unit_id));
 
+
+    const minTimes = timestamp => ts(_.minBy(this.payload.filter(obj => !_.isEmpty(obj[timestamp])),
+      unit => ts(unit[timestamp]))[timestamp]);
+
+    const maxTimes = timestamp => ts(_.maxBy(this.payload.filter(obj => !_.isEmpty(obj[timestamp])),
+      unit => ts(unit[timestamp]))[timestamp]);
 
     const description = {
       event_opened: eventOpened.format(),
       type: payload.call_type_group,
       subtype: payload.call_type,
-      event_id: this.payload.call_number,
+      event_id: payload.call_number,
       incident_number: payload.incident_number,
-      event_closed: ts(this.payload.ClosedDateTime),
-      //units: _.filter(uniqUnits, unitId => (!unitId.startsWith('SWA') && !unitId.startsWith('IT'))),
-      // first_unit_dispatched: ts(this.payload.DispatchDateTime),
-      // first_unit_enroute: ts(firstUnitEnroute),
-      // first_unit_arrived: ts(this.payload.OnSceneDateTime),
-      psap_answer_time: ts(this.payload.CallReceivedDateTime),
+      event_closed: maxTimes('available_dttm'),
+      units: uniqUnits,
+      first_unit_dispatched: minTimes('dispatch_dttm'),
+      first_unit_enroute: minTimes('response_dttm'),
+      first_unit_arrived: minTimes('on_scene_dttm'),
+      psap_answer_time: ts(payload.received_dttm),
       hour_of_day: eventOpened.hours(),
       day_of_week: eventOpened.format('dddd'),
       shift: this.calculateShift(eventOpened.format()),

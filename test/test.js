@@ -184,61 +184,59 @@ describe('San Francisco Normalizer', () => {
         description = sf.normalizeDescription();
       });
 
-      it('correctly parses the priorityDispatch', () => {
-        expect(description.shift).to.be.equal('3');
+      it('correctly parses the priority', () => {
+        expect(description.priority).to.be.equal('3');
       });
 
       it('correctly parses the event open time', () => {
-        expect(description.event_opened).to.equal('2017-12-13T07:46:46-07:00');
+        //2017-06-23T20:33:40.000
+        expect(description.event_opened).to.equal('2017-06-23T20:33:40-07:00');
       });
 
       it('correctly parses the event type', () => {
-        expect(description.type).to.equal('ME');
+        expect(description.type).to.equal('Alarm');
       });
 
       it('correctly parses the incident number', () => {
-        expect(description.incident_number).to.equal('F173470056');
+        expect(description.incident_number).to.equal('17073664');
+      });
+
+      it('correctly parses the units', () => {
+        expect(description.units).to.eql(['B05', 'T06', 'E05', 'E06']);
       });
 
       it('correctly parses the event close time', () => {
-        expect(description.event_closed).to.equal('2017-12-13T08:41:12-07:00');
+        expect(description.event_closed).to.equal('2017-06-23T20:53:27-07:00');
       });
 
-      it('correctly parses the shift', () => {
+      it.skip('correctly parses the shift', () => {
         expect(description.shift).to.be.equal('A');
       });
 
       it('correctly parses the event subtype', () => {
-        expect(description.subtype).to.equal('SCA');
-      });
-
-      it('correcty parses the units', () => {
-        expect(description.units.length).to.equal(3);
-        expect(description.units).to.include('EN021');
-        expect(description.units).to.include('PM016');
-        expect(description.units).to.include('PM049');
+        expect(description.subtype).to.equal('Alarms');
       });
 
       it('correctly parses the first unit dispatch time', () => {
         // eslint-disable-next-line no-unused-expressions
-        expect(description.first_unit_dispatched).to.equal('2017-12-13T07:46:49-07:00');
+        expect(description.first_unit_dispatched).to.equal('2017-06-23T20:34:06-07:00');
       });
 
       // TODO
       it('correctly parses the first unit enroute time', () => {
-        expect(description.first_unit_enroute).to.equal('2017-12-13T07:48:05-07:00');
+        expect(description.first_unit_enroute).to.equal('2017-06-23T20:36:08-07:00');
       });
 
       it('correctly parses the first unit arrival time', () => {
-        expect(description.first_unit_arrived).to.be.equal('2017-12-13T07:52:04-07:00');
+        expect(description.first_unit_arrived).to.be.equal('2017-06-23T20:41:38-07:00');
       });
 
       it('correctly parses the hour of day', () => {
-        expect(description.hour_of_day).to.equal(7);
+        expect(description.hour_of_day).to.equal(20);
       });
 
       it('correctly parses the day of the week', () => {
-        expect(description.day_of_week).to.equal('Wednesday');
+        expect(description.day_of_week).to.equal('Friday');
       });
 
       it('correctly parses the alarm', () => {
@@ -246,15 +244,15 @@ describe('San Francisco Normalizer', () => {
       });
 
       it('correctly parses loss_stopped', () => {
-        expect(description.loss_stopped).to.be.null;
+        expect(description.loss_stopped).to.be.undefined;
       });
 
       it('correctly parses the psap answer time', () => {
-        expect(description.psap_answer_time).to.equal('2017-12-13T07:46:08-07:00');
+        expect(description.psap_answer_time).to.equal('2017-06-23T20:30:09-07:00');
       });
 
       it('correctly parses the event id', () => {
-        expect(description.event_id).to.equal('3101996');
+        expect(description.event_id).to.equal('171743725');
       });
 
       it('correctly parses the comments', () => {
@@ -262,10 +260,8 @@ describe('San Francisco Normalizer', () => {
       });
 
       it('correctly parses the extended data', () => {
-        expect(description.extended_data.response_duration).to.equal(315);
-        expect(description.extended_data.event_duration).to.equal(3266);
-        expect(description.extended_data.AgencyIncidentCallType).to.equal('6M1');
-        expect(description.extended_data.AgencyIncidentCallTypeDescription).to.equal('CARDIAC ARREST - UNC OR NOT BREATHING NORMALLY');
+        expect(description.extended_data.response_duration).to.equal(452);
+        expect(description.extended_data.event_duration).to.equal(1187);
       });
     });
 
