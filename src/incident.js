@@ -66,9 +66,6 @@ export default class SanFranciscoDemoIncident extends IncidentNormalizer {
     const maxTimes = timestamp => ts(_.maxBy(this.payload.filter(obj => !_.isEmpty(obj[timestamp])),
       unit => ts(unit[timestamp]))[timestamp]);
 
-
-      // TODO add category
-      // TODO add neighborhood
     const description = {
       event_opened: eventOpened.format(),
       type: payload.call_type_group,
