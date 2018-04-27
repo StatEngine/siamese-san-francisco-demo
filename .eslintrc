@@ -1,0 +1,13 @@
+{
+  "extends": "airbnb",
+  "rules": {
+    "import/extensions": 0,
+    "import/no-extraneous-dependencies": 0,
+    "import/no-unresolved": 2,
+    "linebreak-style": 0,
+    "jsx-a11y/href-no-hash": "off",
+  },
+  "env": {
+    "mocha": true
+  }
+}
