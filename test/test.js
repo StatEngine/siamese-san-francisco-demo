@@ -58,7 +58,7 @@ describe('San Francisco Normalizer', () => {
   describe.only('Basic Incident', () => {
     let sf;
 
-    before(() => FireIncident.fromFile(path.join(__dirname, './data/171743725.json')).then((res) => { sf = res; }));
+    before(() => FireIncident.fromFile(path.join(__dirname, './data/17073664.json')).then((res) => { sf = res; }));
 
     describe('correctly parses the department', () => {
       let department;
@@ -177,11 +177,15 @@ describe('San Francisco Normalizer', () => {
       });
     });
 
-    describe.skip('correctly parses the description', () => {
+    describe('correctly parses the description', () => {
       let description;
 
       before(() => {
         description = sf.normalizeDescription();
+      });
+
+      it('correctly parses the priorityDispatch', () => {
+        expect(description.shift).to.be.equal('3');
       });
 
       it('correctly parses the event open time', () => {
