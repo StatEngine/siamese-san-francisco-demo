@@ -175,6 +175,10 @@ describe('San Francisco Normalizer', () => {
       it('correctly parses the elevation', () => {
         expect(address.elevation).to.be.undefined;
       });
+
+      it('correctly parses the neighborhood', () => {
+        expect(address.neighborhood).to.equal('Haight Ashbury');
+      });
     });
 
     describe('correctly parses the description', () => {
@@ -265,7 +269,7 @@ describe('San Francisco Normalizer', () => {
       });
     });
 
-    describe.only('correctly parses the apparatus', () => {
+    describe('correctly parses the apparatus', () => {
       let apparatus;
       let t06;
       let e06;

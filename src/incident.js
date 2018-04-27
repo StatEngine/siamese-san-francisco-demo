@@ -38,7 +38,8 @@ export default class SanFranciscoDemoIncident extends IncidentNormalizer {
       longitude: parseFloat(payload.location.coordinates[0]),
       latitude: parseFloat(payload.location.coordinates[1]),
       battalion: payload.battalion,
-      first_due: payload.station_area
+      first_due: payload.station_area,
+      neighborhood: payload.neighborhoods_analysis_boundaries
     };
 
     address.geohash = IncidentNormalizer.latLongToGeohash(address.longitude, address.latitude);
