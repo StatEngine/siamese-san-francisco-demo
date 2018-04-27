@@ -68,8 +68,8 @@ export default class SanFranciscoDemoIncident extends IncidentNormalizer {
 
     const description = {
       event_opened: eventOpened.format(),
-      type: payload.call_type_group,
-      subtype: payload.call_type,
+      type: payload.call_type,
+      subtype: payload.call_type_group,
       event_id: payload.call_number,
       incident_number: payload.incident_number,
       event_closed: maxTimes('available_dttm'),

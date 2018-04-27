@@ -198,7 +198,7 @@ describe('San Francisco Normalizer', () => {
       });
 
       it('correctly parses the event type', () => {
-        expect(description.type).to.equal('Alarm');
+        expect(description.type).to.equal('Alarms');
       });
 
       it('correctly parses the incident number', () => {
@@ -218,7 +218,7 @@ describe('San Francisco Normalizer', () => {
       });
 
       it('correctly parses the event subtype', () => {
-        expect(description.subtype).to.equal('Alarms');
+        expect(description.subtype).to.equal('Alarm');
       });
 
       it('correctly parses the first unit dispatch time', () => {
