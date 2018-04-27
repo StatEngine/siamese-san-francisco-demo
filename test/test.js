@@ -265,78 +265,75 @@ describe('San Francisco Normalizer', () => {
       });
     });
 
-    describe.skip('correctly parses the apparatus', () => {
+    describe.only('correctly parses the apparatus', () => {
       let apparatus;
-      let e21;
-      let pm16;
-      let pm49;
+      let t06;
+      let e06;
+      let e05;
+      let b05;
 
       before(() => {
         apparatus = sf.normalizeApparatus();
-        e21 = apparatus.find(app => app.unit_id === 'EN021');
-        pm16 = apparatus.find(app => app.unit_id === 'PM016');
-        pm49 = apparatus.find(app => app.unit_id === 'PM049');
+        t06 = apparatus.find(app => app.unit_id === 'T06');
+        e06 = apparatus.find(app => app.unit_id === 'E06');
+        e05 = apparatus.find(app => app.unit_id === 'E05');
+        b05 = apparatus.find(app => app.unit_id === 'B05');
       });
 
-      it('correctly parses the shift of the apparatus', () => {
-        expect(e21.shift).to.equal('A');
-        expect(pm16.shift).to.equal('A');
-        expect(pm49.shift).to.equal('A');
-      });
-
-      it('correctly parses the car id of an apparatus', () => {
-        expect(e21.car_id).to.equal('8794');
-        expect(pm16.car_id).to.equal('8851');
-        expect(pm49.car_id).to.equal('8848');
+      it.skip('correctly parses the shift of the apparatus', () => {
+        expect(t06.shift).to.equal('A');
+        expect(e06.shift).to.equal('A');
+        expect(e05.shift).to.equal('A');
       });
 
       it.skip('correctly parses the unit\'s station', () => {
-      //   expect(e21.station).to.equal('FSTA23');
-      //   expect(pm16.station).to.equal('FSTA17');
-      //   expect(pm49.station).to.equal('FSTA13');
+      //   expect(t06.station).to.equal('FSTA23');
+      //   expect(e06.station).to.equal('FSTA17');
+      //   expect(e05.station).to.equal('FSTA13');
       });
 
       it('correctly parses the unit\'s type', () => {
-        expect(e21.unit_type).to.equal('Engine');
-        expect(pm16.unit_type).to.equal('ALS');
-        expect(pm49.unit_type).to.equal('ALS');
+        expect(t06.unit_type).to.equal('Truck/Aerial');
+        expect(e06.unit_type).to.equal('Engine');
+        expect(e05.unit_type).to.equal('Engine');
+        expect(b05.unit_type).to.equal('Chief Officer');
       });
 
       it('correctly parses the unit\'s dispatch time', () => {
-        expect(e21.unit_status.dispatched.timestamp).to.equal('2017-12-13T07:46:50-07:00');
-        expect(pm16.unit_status.dispatched.timestamp).to.equal('2017-12-13T07:47:51-07:00');
-        expect(pm49.unit_status.dispatched.timestamp).to.equal('2017-12-13T07:46:51-07:00');
+        expect(t06.unit_status.dispatched.timestamp).to.equal('2017-06-23T20:34:06-07:00');
+        expect(e06.unit_status.dispatched.timestamp).to.equal('2017-06-23T20:34:06-07:00');
+        expect(e05.unit_status.dispatched.timestamp).to.equal('2017-06-23T20:37:59-07:00');
       });
 
       it('correctly parses the unit\'s enroute time', () => {
-        expect(e21.unit_status.enroute.timestamp).to.equal('2017-12-13T07:48:31-07:00');
-        expect(pm16.unit_status.enroute.timestamp).to.equal('2017-12-13T07:50:18-07:00');
-        expect(pm49.unit_status.enroute.timestamp).to.equal('2017-12-13T07:48:05-07:00');
+        expect(t06.unit_status.enroute).to.be.undefined;
+        expect(e06.unit_status.enroute.timestamp).to.equal('2017-06-23T20:36:08-07:00');
+        expect(e05.unit_status.enroute.timestamp).to.equal('2017-06-23T20:37:59-07:00');
       });
 
       it('correctly parses the unit\'s arrival time', () => {
-        expect(e21.unit_status.arrived.timestamp).to.equal('2017-12-13T07:52:04-07:00');
-        expect(pm16.unit_status.arrived.timestamp).to.equal('2017-12-13T07:53:47-07:00');
-        expect(pm49.unit_status.arrived).to.be.undefined;
+        expect(t06.unit_status.arrived).to.be.undefined;
+        expect(e06.unit_status.arrived).to.be.undefined;
+        expect(e05.unit_status.arrived.timestamp).to.be.equal('2017-06-23T20:41:38-07:00');
       });
 
       it('correctly parses the unit\'s available time', () => {
-        expect(e21.unit_status.available.timestamp).to.equal('2017-12-13T08:41:12-07:00');
-        expect(pm16.unit_status.available.timestamp).to.equal('2017-12-13T07:54:29-07:00');
-        expect(pm49.unit_status.available.timestamp).to.equal('2017-12-13T07:49:24-07:00');
+        expect(t06.unit_status.available.timestamp).to.equal('2017-06-23T20:35:46-07:00');
+        expect(e06.unit_status.available.timestamp).to.equal('2017-06-23T20:37:59-07:00');
+        expect(e05.unit_status.available.timestamp).to.equal('2017-06-23T20:53:27-07:00');
       });
 
       it('correctly parses a unit\'s personnel', () => {
-        expect(e21.personnel).to.be.undefined;
-        expect(pm16.personnel).to.be.undefined;
-        expect(pm49.personnel).to.be.undefined;
+        expect(t06.personnel).to.be.undefined;
+        expect(e06.personnel).to.be.undefined;
+        expect(e05.personnel).to.be.undefined;
       });
 
       it('correctly parses the extended data', () => {
-        expect(e21.extended_data.turnout_duration).to.equal(101);
-        expect(e21.extended_data.travel_duration).to.equal(213);
-        expect(e21.extended_data.response_duration).to.equal(314);
-        expect(e21.extended_data.event_duration).to.equal(3262);
+        expect(e05.extended_data.turnout_duration).to.equal(0);
+        expect(e05.extended_data.travel_duration).to.equal(219);
+        expect(e05.extended_data.response_duration).to.equal(219);
+        expect(e05.extended_data.event_duration).to.equal(928);
       });
     });
   });

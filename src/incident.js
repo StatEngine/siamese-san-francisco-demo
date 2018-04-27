@@ -56,18 +56,8 @@ export default class SanFranciscoDemoIncident extends IncidentNormalizer {
     const payload = this.payload[0];
     const eventOpened = this.parseDate(payload.entry_dttm);
 
-    // let firstUnitEnroute;
-    // if (this.payload.EnrouteDateTime) {
-    //   firstUnitEnroute = this.payload.EnrouteDateTime;
-    // } else {
-    //   const unitsEnRoute = _.filter(this.payload.Unit, u => u.UnitEnrouteDateTime);
-    //   const minUnitEnroute = _.minBy(unitsEnRoute, u => moment(u.UnitEnrouteDateTime).valueOf());
-    //   firstUnitEnroute = minUnitEnroute ? minUnitEnroute.UnitEnrouteDateTime : undefined;
-    // }
-
      const uniqUnits = _.uniq(
        _.map(this.payload, u => u.unit_id));
-
 
     const minTimes = timestamp => ts(_.minBy(this.payload.filter(obj => !_.isEmpty(obj[timestamp])),
       unit => ts(unit[timestamp]))[timestamp]);
@@ -75,6 +65,9 @@ export default class SanFranciscoDemoIncident extends IncidentNormalizer {
     const maxTimes = timestamp => ts(_.maxBy(this.payload.filter(obj => !_.isEmpty(obj[timestamp])),
       unit => ts(unit[timestamp]))[timestamp]);
 
+
+      // TODO add category
+      // TODO add neighborhood
     const description = {
       event_opened: eventOpened.format(),
       type: payload.call_type_group,
@@ -93,7 +86,67 @@ export default class SanFranciscoDemoIncident extends IncidentNormalizer {
       priority: payload.priority,
       alarms: !_.isUndefined(payload.number_of_alarms) ? Number(payload.number_of_alarms) : undefined
     };
+
     description.extended_data = IncidentNormalizer.calculateDescriptionExtendedData(description);
     return description;
+  }
+
+  normalizeUnitType(unitType) {
+    switch (unitType) {
+      case 'CHIEF':
+        return 'Chief Officer';
+      case 'ENGINE':
+        return 'Engine';
+      case 'TRUCK':
+        return 'Truck/Aerial';
+      case 'MEDIC':
+        return 'ALS';
+      case 'RESCUE CAPTAIN':
+        return 'Other Apparatus';
+      case 'RESCUE SQUAD':
+        return 'Rescue Unit';
+      case 'AIRPORT':
+        return 'ARFF';
+      case 'SUPPORT':
+        return 'Support Unit';
+      default:
+        return 'Uknown';
+    }
+  }
+
+  normalizeApparatus() {
+    const apparatus = [];
+
+    return this.payload.map((unit) => {
+      const incApp = {
+        unit_id: unit.unit_id,
+        unit_type: this.normalizeUnitType(unit.unit_type),
+        unit_status: {},
+      };
+
+      const statuses = [
+        ['dispatched', 'dispatch_dttm'],
+        ['enroute', 'response_dttm'],
+        ['arrived', 'on_scene_dttm'],
+        ['available', 'available_dttm'],
+        ['transport_started', 'transport_dttm'],
+        ['transport_arrived', 'hospital_dttm'],
+      ];
+
+      statuses.forEach((status) => {
+        const [type, key] = status;
+        if (unit[key]) {
+          const timestamp = this.parseDate(unit[key]).format();
+          incApp.unit_status[type] = { timestamp };
+
+          if (type === 'dispatched') {
+            incApp.shift = this.calculateShift(timestamp);
+          }
+        }
+      });
+
+      incApp.extended_data = IncidentNormalizer.calculateUnitStatusExtendedData(incApp.unit_status);
+      return incApp;
+    });
   }
 }
