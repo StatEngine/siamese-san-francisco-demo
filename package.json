@@ -1,11 +1,10 @@
 {
   "name": "@statengine/siamese-san-francisco-demo",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "siamese san-francisco-demo module",
   "main": "lib",
   "author": "Prominent Edge",
   "license": "GPL-3.0",
-  "private": true,
   "scripts": {
     "lint": "node_modules/eslint/bin/eslint.js src/** test/**",
     "test": "mocha --compilers js:babel-register ./test/*.js",
@@ -18,7 +17,7 @@
     }
   },
   "dependencies": {
-    "@statengine/siamese": "ProminentEdge/siamese"
+    "@statengine/siamese": "^0.0.2"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
@@ -30,6 +29,7 @@
     "eslint": "^4.6.1",
     "eslint-config-airbnb": "^15.1.0",
     "eslint-config-airbnb-base": "^12.0.0",
+    "eslint-plugin-chai-friendly": "^0.4.0",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-jsx-a11y": "^6.0.2",
     "eslint-plugin-react": "^7.3.0"

@@ -39,7 +39,7 @@ export default class SanFranciscoDemoIncident extends IncidentNormalizer {
       latitude: parseFloat(payload.location.coordinates[1]),
       battalion: payload.battalion,
       first_due: payload.station_area,
-      neighborhood: payload.neighborhoods_analysis_boundaries
+      neighborhood: payload.neighborhoods_analysis_boundaries,
     };
 
     address.geohash = IncidentNormalizer.latLongToGeohash(address.longitude, address.latitude);
@@ -47,7 +47,7 @@ export default class SanFranciscoDemoIncident extends IncidentNormalizer {
     return address;
   }
 
-  normalizeCategory(incidentType) {
+  static normalizeCategory(incidentType) {
     const emsIncidents = ['Medical Incident'];
     const otherIncidents = ['Other', 'Citizen Assist / Service Call'];
 
@@ -77,19 +77,20 @@ export default class SanFranciscoDemoIncident extends IncidentNormalizer {
       event_id: payload.call_number,
       incident_number: payload.incident_number,
       psap_answer_time: ts(payload.received_dttm),
-      category: this.normalizeCategory(payload.call_type),
+      category: SanFranciscoDemoIncident.normalizeCategory(payload.call_type),
       hour_of_day: eventOpened.hours(),
       day_of_week: eventOpened.format('dddd'),
       shift: this.calculateShift(eventOpened.format()),
       priority: payload.priority,
-      alarms: !_.isUndefined(payload.number_of_alarms) ? Number(payload.number_of_alarms) : undefined
+      alarms: !_.isUndefined(payload.number_of_alarms) ?
+        Number(payload.number_of_alarms) : undefined,
     };
 
     description.extended_data = IncidentNormalizer.calculateDescriptionExtendedData(description);
     return description;
   }
 
-  normalizeUnitType(unitType) {
+  static normalizeUnitType(unitType) {
     switch (unitType) {
       case 'CHIEF':
         return 'Chief Officer';
@@ -108,17 +109,17 @@ export default class SanFranciscoDemoIncident extends IncidentNormalizer {
       case 'SUPPORT':
         return 'Support Unit';
       default:
-        return 'Uknown';
+        return 'Unknown';
     }
   }
 
   normalizeApparatus() {
     const apparatus = [];
 
-    let unit = this.payload;
+    const unit = this.payload;
     const incApp = {
       unit_id: unit.unit_id,
-      unit_type: this.normalizeUnitType(unit.unit_type),
+      unit_type: SanFranciscoDemoIncident.normalizeUnitType(unit.unit_type),
       unit_status: {},
     };
 

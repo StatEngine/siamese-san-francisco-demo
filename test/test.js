@@ -58,7 +58,10 @@ describe('San Francisco Normalizer', () => {
   });
 
   describe.only('Basic Incident', () => {
-    let b05, e05, e06, t06;
+    let b05;
+    let e05;
+    let e06;
+    let t06;
 
     before(() => {
       b05 = new FireIncident(JSON.parse(fs.readFileSync(path.join(__dirname, './data/171743725-B05.json'))));
@@ -257,7 +260,10 @@ describe('San Francisco Normalizer', () => {
     });
 
     describe('correctly parses the apparatus', () => {
-      let b05a, e05a, e06a, t06a;
+      let b05a;
+      let e05a;
+      let e06a;
+      let t06a;
 
       before(() => {
         b05a = b05.normalizeApparatus()[0];
@@ -273,9 +279,9 @@ describe('San Francisco Normalizer', () => {
       });
 
       it.skip('correctly parses the unit\'s station', () => {
-         expect(t06.station).to.equal('FSTA23');
-         expect(e06.station).to.equal('FSTA17');
-         expect(e05.station).to.equal('FSTA13');
+        expect(t06.station).to.equal('FSTA23');
+        expect(e06.station).to.equal('FSTA17');
+        expect(e05.station).to.equal('FSTA13');
       });
 
       it('correctly parses the unit\'s type', () => {
