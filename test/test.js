@@ -1,5 +1,7 @@
 import { expect } from 'chai';
 import path from 'path';
+import fs from 'fs';
+
 import FireIncident from '../src/incident';
 
 describe('San Francisco Normalizer', () => {
@@ -56,15 +58,20 @@ describe('San Francisco Normalizer', () => {
   });
 
   describe.only('Basic Incident', () => {
-    let sf;
+    let b05, e05, e06, t06;
 
-    before(() => FireIncident.fromFile(path.join(__dirname, './data/17073664.json')).then((res) => { sf = res; }));
+    before(() => {
+      b05 = new FireIncident(JSON.parse(fs.readFileSync(path.join(__dirname, './data/171743725-B05.json'))));
+      e05 = new FireIncident(JSON.parse(fs.readFileSync(path.join(__dirname, './data/171743725-E05.json'))));
+      e06 = new FireIncident(JSON.parse(fs.readFileSync(path.join(__dirname, './data/171743725-E06.json'))));
+      t06 = new FireIncident(JSON.parse(fs.readFileSync(path.join(__dirname, './data/171743725-T06.json'))));
+    });
 
     describe('correctly parses the department', () => {
       let department;
 
       before(() => {
-        department = sf.normalizeFireDepartment();
+        department = b05.normalizeFireDepartment();
       });
 
       it('correctly parses the fdid', () => {
@@ -92,7 +99,7 @@ describe('San Francisco Normalizer', () => {
       let address;
 
       before(() => {
-        address = sf.normalizeAddress();
+        address = b05.normalizeAddress();
       });
 
       it('correctly parses the house number', () => {
@@ -185,7 +192,7 @@ describe('San Francisco Normalizer', () => {
       let description;
 
       before(() => {
-        description = sf.normalizeDescription();
+        description = b05.normalizeDescription();
       });
 
       it('correctly parses the priority', () => {
@@ -204,12 +211,8 @@ describe('San Francisco Normalizer', () => {
         expect(description.incident_number).to.equal('17073664');
       });
 
-      it('correctly parses the units', () => {
-        expect(description.units).to.eql(['B05', 'T06', 'E05', 'E06']);
-      });
-
       it('correctly parses the event close time', () => {
-        expect(description.event_closed).to.equal('2017-06-23T20:53:27-07:00');
+        expect(description.event_closed).to.equal('2017-06-23T20:35:46-07:00');
       });
 
       it.skip('correctly parses the shift', () => {
@@ -222,20 +225,6 @@ describe('San Francisco Normalizer', () => {
 
       it('correctly parses the event category', () => {
         expect(description.category).to.equal('FIRE');
-      });
-
-      it('correctly parses the first unit dispatch time', () => {
-        // eslint-disable-next-line no-unused-expressions
-        expect(description.first_unit_dispatched).to.equal('2017-06-23T20:34:06-07:00');
-      });
-
-      // TODO
-      it('correctly parses the first unit enroute time', () => {
-        expect(description.first_unit_enroute).to.equal('2017-06-23T20:36:08-07:00');
-      });
-
-      it('correctly parses the first unit arrival time', () => {
-        expect(description.first_unit_arrived).to.be.equal('2017-06-23T20:41:38-07:00');
       });
 
       it('correctly parses the hour of day', () => {
@@ -265,26 +254,16 @@ describe('San Francisco Normalizer', () => {
       it('correctly parses the comments', () => {
         expect(description.comments).to.be.undefined;
       });
-
-      it('correctly parses the extended data', () => {
-        expect(description.extended_data.response_duration).to.equal(452);
-        expect(description.extended_data.event_duration).to.equal(1187);
-      });
     });
 
     describe('correctly parses the apparatus', () => {
-      let apparatus;
-      let t06;
-      let e06;
-      let e05;
-      let b05;
+      let b05a, e05a, e06a, t06a;
 
       before(() => {
-        apparatus = sf.normalizeApparatus();
-        t06 = apparatus.find(app => app.unit_id === 'T06');
-        e06 = apparatus.find(app => app.unit_id === 'E06');
-        e05 = apparatus.find(app => app.unit_id === 'E05');
-        b05 = apparatus.find(app => app.unit_id === 'B05');
+        b05a = b05.normalizeApparatus()[0];
+        e05a = e05.normalizeApparatus()[0];
+        e06a = e06.normalizeApparatus()[0];
+        t06a = t06.normalizeApparatus()[0];
       });
 
       it.skip('correctly parses the shift of the apparatus', () => {
@@ -294,53 +273,58 @@ describe('San Francisco Normalizer', () => {
       });
 
       it.skip('correctly parses the unit\'s station', () => {
-      //   expect(t06.station).to.equal('FSTA23');
-      //   expect(e06.station).to.equal('FSTA17');
-      //   expect(e05.station).to.equal('FSTA13');
+         expect(t06.station).to.equal('FSTA23');
+         expect(e06.station).to.equal('FSTA17');
+         expect(e05.station).to.equal('FSTA13');
       });
 
       it('correctly parses the unit\'s type', () => {
-        expect(t06.unit_type).to.equal('Truck/Aerial');
-        expect(e06.unit_type).to.equal('Engine');
-        expect(e05.unit_type).to.equal('Engine');
-        expect(b05.unit_type).to.equal('Chief Officer');
+        expect(b05a.unit_type).to.equal('Chief Officer');
+        expect(e06a.unit_type).to.equal('Engine');
+        expect(e05a.unit_type).to.equal('Engine');
+        expect(t06a.unit_type).to.equal('Truck/Aerial');
       });
 
       it('correctly parses the unit\'s dispatch time', () => {
-        expect(t06.unit_status.dispatched.timestamp).to.equal('2017-06-23T20:34:06-07:00');
-        expect(e06.unit_status.dispatched.timestamp).to.equal('2017-06-23T20:34:06-07:00');
-        expect(e05.unit_status.dispatched.timestamp).to.equal('2017-06-23T20:37:59-07:00');
+        expect(b05a.unit_status.dispatched.timestamp).to.equal('2017-06-23T20:34:06-07:00');
+        expect(e05a.unit_status.dispatched.timestamp).to.equal('2017-06-23T20:37:59-07:00');
+        expect(e06a.unit_status.dispatched.timestamp).to.equal('2017-06-23T20:34:06-07:00');
+        expect(t06a.unit_status.dispatched.timestamp).to.equal('2017-06-23T20:34:06-07:00');
       });
 
       it('correctly parses the unit\'s enroute time', () => {
-        expect(t06.unit_status.enroute).to.be.undefined;
-        expect(e06.unit_status.enroute.timestamp).to.equal('2017-06-23T20:36:08-07:00');
-        expect(e05.unit_status.enroute.timestamp).to.equal('2017-06-23T20:37:59-07:00');
+        expect(b05a.unit_status.enroute).to.be.undefined;
+        expect(e05a.unit_status.enroute.timestamp).to.equal('2017-06-23T20:37:59-07:00');
+        expect(e06a.unit_status.enroute.timestamp).to.equal('2017-06-23T20:36:08-07:00');
+        expect(t06a.unit_status.enroute).to.be.undefined;
       });
 
       it('correctly parses the unit\'s arrival time', () => {
-        expect(t06.unit_status.arrived).to.be.undefined;
-        expect(e06.unit_status.arrived).to.be.undefined;
-        expect(e05.unit_status.arrived.timestamp).to.be.equal('2017-06-23T20:41:38-07:00');
+        expect(b05a.unit_status.arrived).to.be.undefined;
+        expect(e05a.unit_status.arrived.timestamp).to.equal('2017-06-23T20:41:38-07:00');
+        expect(e06a.unit_status.arrived).to.be.undefined;
+        expect(t06a.unit_status.arrived).to.be.undefined;
       });
 
       it('correctly parses the unit\'s available time', () => {
-        expect(t06.unit_status.available.timestamp).to.equal('2017-06-23T20:35:46-07:00');
-        expect(e06.unit_status.available.timestamp).to.equal('2017-06-23T20:37:59-07:00');
-        expect(e05.unit_status.available.timestamp).to.equal('2017-06-23T20:53:27-07:00');
+        expect(b05a.unit_status.available.timestamp).to.equal('2017-06-23T20:35:46-07:00');
+        expect(e05a.unit_status.available.timestamp).to.equal('2017-06-23T20:53:27-07:00');
+        expect(e06a.unit_status.available.timestamp).to.equal('2017-06-23T20:37:59-07:00');
+        expect(t06a.unit_status.available.timestamp).to.equal('2017-06-23T20:35:46-07:00');
       });
 
       it('correctly parses a unit\'s personnel', () => {
-        expect(t06.personnel).to.be.undefined;
-        expect(e06.personnel).to.be.undefined;
-        expect(e05.personnel).to.be.undefined;
+        expect(b05a.personnel).to.be.undefined;
+        expect(e05a.personnel).to.be.undefined;
+        expect(e06a.personnel).to.be.undefined;
+        expect(t06a.personnel).to.be.undefined;
       });
 
       it('correctly parses the extended data', () => {
-        expect(e05.extended_data.turnout_duration).to.equal(0);
-        expect(e05.extended_data.travel_duration).to.equal(219);
-        expect(e05.extended_data.response_duration).to.equal(219);
-        expect(e05.extended_data.event_duration).to.equal(928);
+        expect(e05a.extended_data.turnout_duration).to.equal(0);
+        expect(e05a.extended_data.travel_duration).to.equal(219);
+        expect(e05a.extended_data.response_duration).to.equal(219);
+        expect(e05a.extended_data.event_duration).to.equal(928);
       });
     });
   });

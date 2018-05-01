@@ -26,7 +26,7 @@ export default class SanFranciscoDemoIncident extends IncidentNormalizer {
   }
 
   normalizeAddress() {
-    const payload = this.payload[0];
+    const payload = this.payload;
 
     const address = {
       address_id: '',
@@ -66,29 +66,16 @@ export default class SanFranciscoDemoIncident extends IncidentNormalizer {
       return v ? v.format() : null;
     };
 
-    const payload = this.payload[0];
+    const payload = this.payload;
     const eventOpened = this.parseDate(payload.entry_dttm);
-
-     const uniqUnits = _.uniq(
-       _.map(this.payload, u => u.unit_id));
-
-    const minTimes = timestamp => ts(_.minBy(this.payload.filter(obj => !_.isEmpty(obj[timestamp])),
-      unit => ts(unit[timestamp]))[timestamp]);
-
-    const maxTimes = timestamp => ts(_.maxBy(this.payload.filter(obj => !_.isEmpty(obj[timestamp])),
-      unit => ts(unit[timestamp]))[timestamp]);
 
     const description = {
       event_opened: eventOpened.format(),
+      event_closed: this.parseDate(payload.available_dttm).format(),
       type: payload.call_type,
       subtype: payload.call_type_group,
       event_id: payload.call_number,
       incident_number: payload.incident_number,
-      event_closed: maxTimes('available_dttm'),
-      units: uniqUnits,
-      first_unit_dispatched: minTimes('dispatch_dttm'),
-      first_unit_enroute: minTimes('response_dttm'),
-      first_unit_arrived: minTimes('on_scene_dttm'),
       psap_answer_time: ts(payload.received_dttm),
       category: this.normalizeCategory(payload.call_type),
       hour_of_day: eventOpened.hours(),
@@ -128,36 +115,37 @@ export default class SanFranciscoDemoIncident extends IncidentNormalizer {
   normalizeApparatus() {
     const apparatus = [];
 
-    return this.payload.map((unit) => {
-      const incApp = {
-        unit_id: unit.unit_id,
-        unit_type: this.normalizeUnitType(unit.unit_type),
-        unit_status: {},
-      };
+    let unit = this.payload;
+    const incApp = {
+      unit_id: unit.unit_id,
+      unit_type: this.normalizeUnitType(unit.unit_type),
+      unit_status: {},
+    };
 
-      const statuses = [
-        ['dispatched', 'dispatch_dttm'],
-        ['enroute', 'response_dttm'],
-        ['arrived', 'on_scene_dttm'],
-        ['available', 'available_dttm'],
-        ['transport_started', 'transport_dttm'],
-        ['transport_arrived', 'hospital_dttm'],
-      ];
+    const statuses = [
+      ['dispatched', 'dispatch_dttm'],
+      ['enroute', 'response_dttm'],
+      ['arrived', 'on_scene_dttm'],
+      ['available', 'available_dttm'],
+      ['transport_started', 'transport_dttm'],
+      ['transport_arrived', 'hospital_dttm'],
+    ];
 
-      statuses.forEach((status) => {
-        const [type, key] = status;
-        if (unit[key]) {
-          const timestamp = this.parseDate(unit[key]).format();
-          incApp.unit_status[type] = { timestamp };
+    statuses.forEach((status) => {
+      const [type, key] = status;
+      if (unit[key]) {
+        const timestamp = this.parseDate(unit[key]).format();
+        incApp.unit_status[type] = { timestamp };
 
-          if (type === 'dispatched') {
-            incApp.shift = this.calculateShift(timestamp);
-          }
+        if (type === 'dispatched') {
+          incApp.shift = this.calculateShift(timestamp);
         }
-      });
-
-      incApp.extended_data = IncidentNormalizer.calculateUnitStatusExtendedData(incApp.unit_status);
-      return incApp;
+      }
     });
+
+    incApp.extended_data = IncidentNormalizer.calculateUnitStatusExtendedData(incApp.unit_status);
+
+    apparatus.push(incApp);
+    return apparatus;
   }
 }

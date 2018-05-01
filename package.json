@@ -7,9 +7,15 @@
   "license": "GPL-3.0",
   "private": true,
   "scripts": {
+    "lint": "node_modules/eslint/bin/eslint.js src/** test/**",
     "test": "mocha --compilers js:babel-register ./test/*.js",
     "compile": "babel -d lib/ src/ --copy-files",
     "prepare": "npm run compile"
+  },
+  "extensions": {
+    "statengine:ingest:normalizer": {
+      "94264": "./lib/index.js"
+    }
   },
   "dependencies": {
     "@statengine/siamese": "ProminentEdge/siamese"

@@ -1,5 +1,10 @@
-import incident from './incident';
+import Incident from './incident';
 
-export const FireIncident = incident;
-
-export default { FireIncident };
+module.exports = function factory() {
+  return {
+    94264: {
+      FireIncident: Incident,
+    },
+  };
+};
+exports = module.exports;
