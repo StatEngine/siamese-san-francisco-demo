@@ -6,7 +6,7 @@ siamese san-francisco-demo module
 
 Using npm:
 ```
-npm install ProminentEdge/siamese-san-francisco-demo
+npm install @statengine/siamese-san-francisco-demo
 ```
 
 ## Tests
