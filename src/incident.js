@@ -71,7 +71,6 @@ export default class SanFranciscoDemoIncident extends IncidentNormalizer {
 
     const description = {
       event_opened: eventOpened.format(),
-      event_closed: this.parseDate(payload.available_dttm).format(),
       type: payload.call_type,
       subtype: payload.call_type_group,
       event_id: payload.call_number,

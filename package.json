@@ -1,6 +1,6 @@
 {
   "name": "@statengine/siamese-san-francisco-demo",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "siamese san-francisco-demo module",
   "main": "lib",
   "author": "Prominent Edge",

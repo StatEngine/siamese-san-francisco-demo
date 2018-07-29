@@ -215,7 +215,7 @@ describe('San Francisco Normalizer', () => {
       });
 
       it('correctly parses the event close time', () => {
-        expect(description.event_closed).to.equal('2017-06-23T20:35:46-07:00');
+        expect(description.event_closed).to.be.undefined;
       });
 
       it.skip('correctly parses the shift', () => {
