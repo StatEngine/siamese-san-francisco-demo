@@ -57,7 +57,7 @@ describe('San Francisco Normalizer', () => {
     });
   });
 
-  describe.only('Basic Incident', () => {
+  describe('Basic Incident', () => {
     let b05;
     let e05;
     let e06;
@@ -187,7 +187,7 @@ describe('San Francisco Normalizer', () => {
       });
 
       it('correctly parses the neighborhood', () => {
-        expect(address.neighborhood).to.equal('Haight Ashbury');
+        expect(address.location.neighborhood).to.equal('Haight Ashbury');
       });
     });
 
@@ -332,6 +332,16 @@ describe('San Francisco Normalizer', () => {
         expect(e05a.extended_data.response_duration).to.equal(219);
         expect(e05a.extended_data.event_duration).to.equal(928);
       });
+    });
+  });
+
+  describe('correctly parses the apparatus', () => {
+    it('lookups erf', () => {
+      expect(FireIncident.lookupClassAndRisk()).to.deep.equal({ risk_category: 'Unknown', response_class: 'Unknown' });
+      expect(FireIncident.lookupClassAndRisk('Fire', 'Vehicle Fire')).to.deep.equal({ risk_category: 'MEDIUM', response_class: 'Fire' });
+      expect(FireIncident.lookupClassAndRisk('Non Life-threatening', 'Medical Incident')).to.deep.equal({ risk_category: 'LOW', response_class: 'EMS' });
+      expect(FireIncident.lookupClassAndRisk('Potentially Life-Threatening', 'Medical Incident')).to.deep.equal({ risk_category: 'MEDIUM', response_class: 'EMS' });
+      expect(FireIncident.lookupClassAndRisk('Alarm', 'Alarms')).to.deep.equal({ risk_category: 'LOW', response_class: 'Alarm' });
     });
   });
 });
