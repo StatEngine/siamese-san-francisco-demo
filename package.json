@@ -17,7 +17,7 @@
     }
   },
   "dependencies": {
-    "@statengine/siamese": "^0.0.2"
+    "@statengine/siamese": "~0.0.2"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
